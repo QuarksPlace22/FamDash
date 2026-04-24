@@ -1,0 +1,23 @@
+import express from "express";
+import fetch from "node-fetch";
+
+const app = express();
+
+const CALENDAR_ICS_URL = "https://calendar.google.com/calendar/ical/8a33a29218e344a6cd6b5592361cda1965c9cb24212882f5fdf2815a7c20d8d9%40group.calendar.google.com/public/basic.ics";
+
+app.get("/api/calendar", async (req, res) => {
+  try {
+    const response = await fetch(CALENDAR_ICS_URL);
+    const text = await response.text();
+
+    res.setHeader("Content-Type", "text/calendar");
+    res.send(text);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Calendar fetch failed");
+  }
+});
+
+app.listen(3001, () => {
+  console.log("Calendar proxy running on http://localhost:3001");
+});

@@ -1,0 +1,39 @@
+
+import express from "express";
+import fetch from "node-fetch";
+import cors from "cors";
+
+const app = express();
+const PORT = 3001;
+
+app.use(cors());
+
+const CALENDAR_ICS_URL = "https://calendar.google.com/calendar/ical/8a33a29218e344a6cd6b5592361cda1965c9cb24212882f5fdf2815a7c20d8d9%40group.calendar.google.com/public/basic.ics";
+
+app.get("/api/calendar", async (req, res) => {
+  try {
+    if (!CALENDAR_ICS_URL || CALENDAR_ICS_URL.includes("PASTE_YOUR")) {
+      return res.status(500).send("Calendar URL is not configured.");
+    }
+
+    const response = await fetch(CALENDAR_ICS_URL);
+
+    if (!response.ok) {
+      throw new Error(`Google Calendar returned HTTP ${response.status}`);
+    }
+
+    const text = await response.text();
+
+    res.setHeader("Content-Type", "text/calendar; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=300");
+
+    res.send(text);
+  } catch (error) {
+    console.error("Calendar fetch failed:", error.message);
+    res.status(500).send("Calendar fetch failed.");
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`Calendar proxy running on http://localhost:${PORT}`);
+});

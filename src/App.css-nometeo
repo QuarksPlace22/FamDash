@@ -1,0 +1,245 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(180deg, #dff3ff 0%, #f7fbff 100%);
+  color: #1f2a37;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+}
+
+.app {
+  max-width: 520px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* ===== HEADER ===== */
+
+.hero {
+  padding: 28px 4px 20px;
+}
+
+.date {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  color: #5b6b7c;
+}
+
+h1 {
+  margin: 0;
+  font-size: 2.2rem;
+  line-height: 1;
+  color: #0f172a;
+}
+
+.subtitle {
+  margin: 10px 0 0;
+  color: #5b6b7c;
+}
+
+/* ===== CARDS ===== */
+
+.card {
+  background: white;
+  border-radius: 26px;
+  padding: 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.08);
+}
+
+h2 {
+  margin: 0 0 14px;
+  font-size: 1.25rem;
+}
+
+/* ===== HEADER ROW ===== */
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.section-header span {
+  background: #ffe9c7;
+  color: #8a5a00;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* ===== BUTTONS ===== */
+
+.small-button {
+  background: #d6f5e8;
+  color: #0c7a5b;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.small-button:hover {
+  background: #bff0dc;
+}
+
+/* ===== ACTIVITIES ===== */
+
+.activity-list {
+  display: grid;
+  gap: 12px;
+}
+
+.activity {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 14px;
+  background: #f0f9ff;
+  border-radius: 18px;
+}
+
+.time {
+  font-weight: 700;
+  color: #0284c7;
+}
+
+.activity p {
+  margin: 4px 0 0;
+  color: #5b6b7c;
+  font-size: 0.92rem;
+}
+
+/* ===== INPUT ===== */
+
+.add-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #d6e4f0;
+  border-radius: 16px;
+  padding: 14px;
+  font-size: 1rem;
+  background: #ffffff;
+}
+
+/* ADD BUTTON */
+
+.add-row button {
+  background: #2563eb;
+  color: white;
+  border-radius: 16px;
+  padding: 0 16px;
+  font-weight: 700;
+}
+
+.add-row button:hover {
+  background: #1e4ed8;
+}
+
+/* ===== SHOPPING ===== */
+
+.shopping-list {
+  display: grid;
+  gap: 10px;
+}
+
+.shopping-item {
+  width: 100%;
+  text-align: left;
+  background: #fef3c7;
+  border-radius: 18px;
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.shopping-item span {
+  font-weight: 700;
+}
+
+.shopping-item small {
+  color: #7c5a00;
+}
+
+.shopping-item.bought {
+  opacity: 0.45;
+  text-decoration: line-through;
+  background: #e5e7eb;
+}
+
+/* ===== CLEAR BUTTON ===== */
+
+.clear-button {
+  width: 100%;
+  margin-top: 14px;
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 16px;
+  padding: 14px;
+  font-weight: 700;
+}
+
+.clear-button:hover {
+  background: #fecaca;
+}
+
+/* ===== TEXT ===== */
+
+.muted {
+  margin: 0;
+  color: #64748b;
+}
+
+.error-text {
+  color: #991b1b;
+  background: #fee2e2;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+}
+
+.refresh-note {
+  margin: 12px 0 0;
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+/* ===== MOBILE ===== */
+
+@media (max-width: 420px) {
+  .app {
+    padding: 14px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .card {
+    border-radius: 22px;
+    padding: 16px;
+  }
+}

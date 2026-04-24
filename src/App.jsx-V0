@@ -1,0 +1,161 @@
+import { useEffect, useState } from "react";
+import ICAL from "ical.js";
+import "./App.css";
+
+const CALENDAR_ICS_URL = "http://localhost:3001/api/calendar";
+
+const initialShopping = [
+  { id: 1, name: "Milk", category: "Groceries", bought: false },
+  { id: 2, name: "Bread", category: "Groceries", bought: false },
+  { id: 3, name: "Toothpaste", category: "Home", bought: false },
+];
+
+function App() {
+  const [activities, setActivities] = useState([]);
+  const [calendarError, setCalendarError] = useState("");
+  const [shopping, setShopping] = useState(initialShopping);
+  const [newItem, setNewItem] = useState("");
+
+  useEffect(() => {
+    async function fetchCalendar() {
+      try {
+        const response = await fetch(CALENDAR_ICS_URL);
+        const text = await response.text();
+
+        const jcalData = ICAL.parse(text);
+        const comp = new ICAL.Component(jcalData);
+        const events = comp.getAllSubcomponents("vevent");
+
+        const today = new Date();
+
+        const todayEvents = events
+          .map((event) => new ICAL.Event(event))
+          .filter((event) => {
+            const start = event.startDate.toJSDate();
+
+            return (
+              start.getDate() === today.getDate() &&
+              start.getMonth() === today.getMonth() &&
+              start.getFullYear() === today.getFullYear()
+            );
+          })
+          .map((event) => ({
+            time: event.startDate.toJSDate().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+            title: event.summary || "Untitled event",
+            note: event.description || "",
+          }))
+          .sort((a, b) => a.time.localeCompare(b.time));
+
+        setActivities(todayEvents);
+      } catch (error) {
+        console.error("Calendar error:", error);
+        setCalendarError("Could not load calendar events.");
+      }
+    }
+
+    if (CALENDAR_ICS_URL !== "YOUR_ICS_URL_HERE") {
+      fetchCalendar();
+    } else {
+      setCalendarError("Calendar URL not configured yet.");
+    }
+  }, []);
+
+  function addItem() {
+    if (!newItem.trim()) return;
+
+    setShopping([
+      ...shopping,
+      {
+        id: Date.now(),
+        name: newItem.trim(),
+        category: "General",
+        bought: false,
+      },
+    ]);
+
+    setNewItem("");
+  }
+
+  function toggleBought(id) {
+    setShopping(
+      shopping.map((item) =>
+        item.id === id ? { ...item, bought: !item.bought } : item
+      )
+    );
+  }
+
+  const todayLabel = new Date().toLocaleDateString("en-CA", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
+
+  return (
+    <main className="app">
+      <section className="hero">
+        <p className="date">{todayLabel}</p>
+        <h1>Family Dashboard</h1>
+        <p className="subtitle">Today’s plan and missing things</p>
+      </section>
+
+      <section className="card">
+        <h2>Today’s activities</h2>
+
+        {calendarError && <p className="muted">{calendarError}</p>}
+
+        <div className="activity-list">
+          {!calendarError && activities.length === 0 ? (
+            <p className="muted">No events today.</p>
+          ) : (
+            activities.map((activity, index) => (
+              <div className="activity" key={index}>
+                <div className="time">{activity.time}</div>
+                <div>
+                  <strong>{activity.title}</strong>
+                  {activity.note && <p>{activity.note}</p>}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </section>
+
+      <section className="card">
+        <div className="section-header">
+          <h2>Shopping list</h2>
+          <span>{shopping.filter((item) => !item.bought).length} missing</span>
+        </div>
+
+        <div className="add-row">
+          <input
+            value={newItem}
+            onChange={(event) => setNewItem(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") addItem();
+            }}
+            placeholder="Add missing item..."
+          />
+          <button onClick={addItem}>Add</button>
+        </div>
+
+        <div className="shopping-list">
+          {shopping.map((item) => (
+            <button
+              className={`shopping-item ${item.bought ? "bought" : ""}`}
+              key={item.id}
+              onClick={() => toggleBought(item.id)}
+            >
+              <span>{item.name}</span>
+              <small>{item.bought ? "Bought" : item.category}</small>
+            </button>
+          ))}
+        </div>
+      </section>
+    </main>
+  );
+}
+
+export default App;
