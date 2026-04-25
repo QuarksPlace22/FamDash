@@ -14,11 +14,21 @@ const WEATHER_LONGITUDE = -73.5673;
 
 app.get("/api/calendar", async (req, res) => {
   try {
-    if (!CALENDAR_ICS_URL || CALENDAR_ICS_URL.includes("PASTE_YOUR")) {
+    if (!CALENDAR_ICS_URL) {
       return res.status(500).send("Calendar URL is not configured.");
     }
 
-    const response = await fetch(CALENDAR_ICS_URL);
+    const freshUrl =
+      CALENDAR_ICS_URL +
+      (CALENDAR_ICS_URL.includes("?") ? "&" : "?") +
+      `cacheBust=${Date.now()}`;
+
+    const response = await fetch(freshUrl, {
+      headers: {
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
+      },
+    });
 
     if (!response.ok) {
       throw new Error(`Google Calendar returned HTTP ${response.status}`);
@@ -27,7 +37,9 @@ app.get("/api/calendar", async (req, res) => {
     const text = await response.text();
 
     res.setHeader("Content-Type", "text/calendar; charset=utf-8");
-    res.setHeader("Cache-Control", "public, max-age=300");
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
 
     res.send(text);
   } catch (error) {
@@ -62,5 +74,5 @@ app.get("/api/weather", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Calendar/weather proxy running on http://localhost:${PORT}`);
+  console.log(`FamDash API running on http://localhost:${PORT}`);
 });
